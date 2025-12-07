@@ -1,24 +1,9 @@
 'use client'
-import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText, } from "@/components/ui/button-group"
-import { HandHelping, IndianRupee, LayoutDashboard, ReceiptIndianRupee } from 'lucide-react';
-import { DynamicIcon } from 'lucide-react/dynamic';
-import Dashboard from './_components/service-catalog-dashboard/Dashboard';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import Service from './_components/service-management/Service';
-import Pricing from './_components/pricing-management/Pricing';
-import Billing from './_components/billing-integration/Billing';
+import React from 'react'
+import ServiceSearchBar from '../ServiceSearchBar';
+import DashboardInteractive from './DashboardInteractive';
 
-export default function ServicePage() {
-    const [active, setActive] = useState({ label: 'Dashboard', icon: 'layout-dashboard', component: <Dashboard /> })
-
-    const navigationItems = [
-        { label: 'Dashboard', icon: 'layout-dashboard', component: <Dashboard /> },
-        { label: 'Services', icon: 'hand-helping', component: <Service /> },
-        { label: 'Pricing', icon: 'indian-rupee', component: <Pricing /> },
-        { label: 'Billing', icon: 'receipt-indian-rupee', component: <Billing /> },
-    ];
+export default function Dashboard() {
 
     const dashboardData = {
         userRole: 'admin',
@@ -179,33 +164,17 @@ export default function ServicePage() {
         ],
     };
 
+
     return (
-        <div className='absolute inset-0 flex flex-col gap-2 p-2'>
-
-            <div className='w-full dark:bg-darkSecondaryBackground  p-4 rounded-lg border flex flex-row items-center justify-between'>
-                <div>
-                    <h2 className='text-xl'>Service Catalog Dashboard</h2>
-                    <h2 className='text-xs text-muted-foreground'>Comprehensive oversight of medical services, pricing, and system performance</h2>
-                </div>
-                <div>
-                    <ButtonGroup className=''>
-                        {
-                            navigationItems.map((item, index) => (
-                                <Button key={index} variant='ghost' size='sm' className={`w-32 border ${active.label === item.label && 'bg-primary/10 dark:bg-darkFocusColor'}`} onClick={() => { setActive(item) }}>
-                                    <DynamicIcon name={item.icon} size={18} className='h-10 line-through' />
-                                    {item.label}
-                                </Button>
-                            ))
-                        }
-
-                    </ButtonGroup>
-                </div>
-            </div>
-
-            <ScrollArea className='h-[85vh] flex flex-grow dark:bg-darkSecondaryBackground p-2 rounded-md pr-4'>
-                {active.component}
-            </ScrollArea>
-
-        </div >
+        <div className='flex flex-col gap-2 w-full'>
+            {/* <div className="w-[50%]">
+                <ServiceSearchBar
+                    searchType="admin"
+                    showFilters={true}
+                    placeholder="Search services, categories, or CPT codes..."
+                />
+            </div> */}
+            <DashboardInteractive initialData={dashboardData} />
+        </div>
     )
 }
