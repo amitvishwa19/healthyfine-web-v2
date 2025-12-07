@@ -985,7 +985,6 @@ model Category {
   updatedAt DateTime @updatedAt
 
   @@unique([parentId, sortOrder]) // Siblings unique sort order
-  @@map("categories")
 }
 
 model Tag {
