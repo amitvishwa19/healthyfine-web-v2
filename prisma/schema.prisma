@@ -2,7 +2,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DB_URL")
+// }
+
+datasource db_neon {
   provider = "postgresql"
   url      = env("DB_URL")
 }
@@ -179,32 +184,34 @@ enum ServerType {
 }
 
 model Server {
-  id          String  @id @default(cuid())
-  name        String
-  description String?
-  imageUrl    String?
-  inviteCode  String  @unique
-  selected    Boolean @default(false)
-  type        String  @default("default")
-  default     Boolean @default(false)
-  terms       String?
-  privacy     String?
+  id String @id @default(cuid())
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  setting      Setting?
+  name        String
+  description String?
+  imageUrl    String?
+  inviteCode  String   @unique
+  selected    Boolean  @default(false)
+  type        String   @default("default")
+  default     Boolean  @default(false)
+  terms       String?
+  privacy     String?
+  setting     Setting?
+  setup       Boolean  @default(false)
+
   roles        Role[]
   members      Member[]
   channels     Channel[]
   boards       Board[]
   appointments Appointment[]
   posts        Post[]
+  Task         Task[]
+  Card         Card[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Task      Task[]
-  Card      Card[]
 
   @@index([userId])
 }
