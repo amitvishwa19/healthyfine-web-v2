@@ -22,6 +22,7 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel"
 import Subscribe from './_component/Subscribe'
+import { useRouter } from 'next/navigation'
 
 
 
@@ -31,6 +32,11 @@ const textFont = DM_Mono({
 })
 
 export default function HomePage() {
+    const router = useRouter()
+
+
+
+
     return (
         <div className=''>
 

@@ -1,7 +1,8 @@
 'use client';
-
 import PropTypes from 'prop-types';
 import Icon from '@/components/ui/AppIcon';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
+import { Button } from '@/components/ui/button';
 
 const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, type = 'warning' }) => {
     if (!isOpen) return null;
@@ -33,51 +34,33 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, type = 'war
     const { icon, iconColor, iconBg, confirmText, confirmClass } = config?.[type] || config?.warning;
 
     return (
-        <div className="fixed inset-0 z-[600] flex items-center justify-center p-4 bg-text-primary/50 backdrop-blur-sm">
-            <div className="bg-surface rounded-lg shadow-elevation-3 w-full max-w-md">
-                <div className="p-6">
-                    {/* Icon */}
-                    <div className={`w-12 h-12 rounded-full ${iconBg} flex items-center justify-center mb-4`}>
-                        <Icon name={icon} size={24} variant="solid" className={iconColor} />
-                    </div>
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogTrigger>Open</DialogTrigger>
+            <DialogContent className='dark:bg-darkPrimaryBackground p-4 w-full max-w-md'>
 
-                    {/* Title */}
-                    <h3 className="text-lg font-semibold text-text-primary mb-2">{title}</h3>
+                <DialogHeader className={''}>
+                    <DialogTitle>{title}</DialogTitle>
+                    <DialogDescription>
+                        {message}
+                    </DialogDescription>
+                </DialogHeader>
 
-                    {/* Message */}
-                    <p className="text-sm text-text-secondary leading-relaxed">{message}</p>
-                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button variant="ghost" size={'sm'}>Cancel</Button>
+                    </DialogClose>
+                    <Button variant={'save'} size={'sm'} onClick={() => {
+                        onConfirm();
+                        onClose();
+                    }}>
+                        {confirmText}</Button>
+                </DialogFooter>
 
-                {/* Actions */}
-                <div className="flex items-center justify-end gap-3 p-6 border-t border-border">
-                    <button
-                        onClick={onClose}
-                        className="px-4 py-2.5 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-muted rounded-lg transition-colors duration-200"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={() => {
-                            onConfirm();
-                            onClose();
-                        }}
-                        className={`px-4 py-2.5 text-sm font-medium rounded-lg shadow-elevation-1 transition-all duration-200 ${confirmClass}`}
-                    >
-                        {confirmText}
-                    </button>
-                </div>
-            </div>
-        </div>
+            </DialogContent>
+        </Dialog>
     );
 };
 
-ConfirmDialog.propTypes = {
-    isOpen: PropTypes?.bool?.isRequired,
-    onClose: PropTypes?.func?.isRequired,
-    onConfirm: PropTypes?.func?.isRequired,
-    title: PropTypes?.string?.isRequired,
-    message: PropTypes?.string?.isRequired,
-    type: PropTypes?.oneOf(['warning', 'danger', 'info'])
-};
+
 
 export default ConfirmDialog;

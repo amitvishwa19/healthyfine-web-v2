@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs"
 import { Calendar, LayoutDashboard, Loader, Plus, SquareKanban } from 'lucide-react'
 import BoardOptions from '../board/_components/_board/BoardOptions'
@@ -23,7 +23,7 @@ export default function ProjectPage() {
     const { onOpen } = useModal()
 
 
-    const [view, setView] = useQueryState('task-view', {
+    const [view, setView] = useState('task-view', {
         defaultValue: 'table'
     })
 

@@ -46,9 +46,11 @@ export default async function layout({ children }) {
                             <TopNav />
                         </div> */}
 
-                        <ScrollArea className='h-full relative flex-1 p-2'>
-                            {children}
-                            <div className='h-12' />
+                        <ScrollArea className='h-full relative flex-1 p-0'>
+                            <div className='p-2'>
+                                {children}
+                            </div>
+                            <div className='h-4' />
                             <ScrollBar orientation="horizontal" />
                         </ScrollArea>
                     </div>

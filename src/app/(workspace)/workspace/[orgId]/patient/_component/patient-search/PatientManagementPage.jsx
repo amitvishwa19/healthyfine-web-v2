@@ -1,10 +1,12 @@
 'use client'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { ArrowUpDown, Eye, FilePenLine, MoreHorizontal, Trash2, UserPlus } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage, } from "@/components/ui/avatar"
+import { ArrowUpDown, CalendarClock, CircleUser, Eye, FilePenLine, FileSliders, MoreHorizontal, Search, Trash2, UserPlus } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuCheckboxItem, } from "@/components/ui/dropdown-menu"
 import { ColumnDef, VisibilityState, flexRender, ColumnFiltersState, getFilteredRowModel, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, } from "@tanstack/react-table"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
+import { Tooltip, TooltipContent, TooltipTrigger, } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
@@ -14,29 +16,19 @@ import { useOrg } from '@/providers/OrgProvider'
 import { ROLE } from '@prisma/client'
 import { getAge } from '@/utils/functions'
 import moment from 'moment'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText, } from "@/components/ui/button-group"
-import { DynamicIcon } from 'lucide-react/dynamic'
-import PatientSearchPage from './_component/patient-search/PatientSearchPage'
-import MedicalRecordsPage from './_component/medical-records/MedicalRecordsPage'
-import BillingManagementPage from './_component/billing-management/BillingManagementPage'
-import PatientManagementPage from './_component/patient-search/PatientManagementPage'
+import { useParams, useRouter } from 'next/navigation'
+import { usePatient } from '../../_provider/patientProvider'
 
 
-export default function PatientPage() {
 
+export default function PatientManagementPage() {
+    const { orgId } = useParams()
+    const { patientsMapData, setSelectedPatient } = usePatient()
+    const router = useRouter()
     const [loading, setLoading] = useState(true)
-    const { onOpen, refresh } = useModal()
     const { users } = useOrg()
     const patients = users?.filter(user => user.role === ROLE.PATIENT)
-
-    const [active, setActive] = useState({ title: 'Patients', icon: 'accessibility', component: <PatientManagementPage /> })
-    const nav = [
-        { title: 'Patients', icon: 'accessibility', component: <PatientManagementPage /> },
-        { title: 'Patients-2', icon: 'accessibility', component: <PatientSearchPage /> },
-        { title: 'Medical Records', icon: 'square-activity', component: <MedicalRecordsPage /> },
-        { title: 'Billing', icon: 'square-activity', component: <BillingManagementPage /> }
-    ]
+    const { onOpen } = useModal()
 
     const tempData = users?.filter(user => user.role === ROLE.PATIENT)
         .map(user => ({
@@ -51,39 +43,59 @@ export default function PatientPage() {
             user: user
         }))
 
-
-
-
-
     const columns = [
 
         {
-            accessorKey: "uuid",
+            accessorKey: "patient",
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     >
-                        PatientId
+                        Patient
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                 )
             },
+            cell: ({ row }) => {
+
+                return (
+                    <div className='flex flex-row items-center gap-4'>
+                        <Avatar className='rounded-md'>
+                            <AvatarImage src={row?.orignal?.user?.avatar} alt="@shadcn" />
+                            <AvatarFallback className='rounded-md bg-sky-500 text-xl font-bold'>{row.original.user.displayName.substring(0, 1)}</AvatarFallback>
+                        </Avatar>
+                        <div className='flex flex-col'>
+                            <span>{row.original.user.displayName}</span>
+                            <span className='text-[10px] text-muted-foreground'>{row.original.user.uuid}</span>
+                        </div>
+
+                    </div>
+                )
+            }
         },
         {
-            accessorKey: "displayName",
+            accessorKey: "dob",
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     >
-                        Name
+                        Date of Birth
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                 )
             },
+            cell: ({ row }) => {
+                const dob = row.original.user?.medicalProfile?.personal?.dob
+                return (
+                    <div className='text-center'>
+                        {dob ? moment(dob).format('MMMM Do, YYYY') : 'NA'}
+                    </div>
+                )
+            }
         },
         {
             accessorKey: "phone",
@@ -98,6 +110,14 @@ export default function PatientPage() {
                     </Button>
                 )
             },
+            cell: ({ row }) => {
+                const mobile = row.original.user?.medicalProfile?.personal?.contact
+                return (
+                    <div className='text-center'>
+                        {mobile ? mobile : 'NA'}
+                    </div>
+                )
+            }
         },
         {
             accessorKey: "age",
@@ -112,6 +132,14 @@ export default function PatientPage() {
                     </Button>
                 )
             },
+            cell: ((row) => {
+
+                return (
+                    <div>
+
+                    </div>
+                )
+            })
         },
         {
             accessorKey: "gender",
@@ -141,7 +169,6 @@ export default function PatientPage() {
                 )
             },
         },
-
         {
             accessorKey: "lastvisit",
             header: ({ column }) => {
@@ -157,146 +184,67 @@ export default function PatientPage() {
             },
         },
         {
-            accessorKey: "roles",
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                    >
-                        Roles
-                    </Button>
-                )
-            },
-            cell: ({ row }) => {
-                const roles = row.original.roles
-
-
-                if (roles?.length > 0) {
-                    return <div className='flex-wrap justify-center'>
-
-                        {
-                            roles?.map((item, index) => {
-                                return (
-                                    <Badge key={index} variant="outline" className='bg-green-500/10 text-green-500 border-green-500/20 mr-2'>
-                                        {item.title}
-                                    </Badge>
-
-                                )
-                            })
-                        }
-                    </div>
-                } else {
-                    return (
-                        <Badge variant="outline" className='bg-yellow-500/10 text-yellow-500 border-yellow-500/20'>
-                            No Permission
-                        </Badge>
-                    )
-                }
-
-
-            }
-        },
-        {
-            accessorKey: "status",
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        Status
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                )
-            },
-            cell: (({ row }) => {
-                return (
-                    <div className=' justify-center'>
-                        {
-                            row.original.status === true
-                                ? <Badge variant="outline" className='bg-green-500/10 text-green-500 border-green-500/20'>
-                                    Active
-                                </Badge>
-                                : <Badge variant="outline" className='bg-red-500/10 text-red-500 border-red-500/20'>
-                                    Inactive
-                                </Badge>
-                        }
-
-                    </div>
-                )
-            })
-        },
-        {
             id: "actions",
             cell: ({ row }) => {
                 //const dispatch = useDispatch()
                 const payment = row.original
 
                 return (
-                    <DropdownMenu className='ring-0	flex justify-end'>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="h-8 w-8 p-0 ring-0 focus-visible:ring-0  border-none">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className='dark:bg-darkSecondaryBackground'>
-                            <DropdownMenuItem onClick={() => {
-                                //onOpen("edituser", { user: row.original })
-                                onOpen("patient-crud", { user: row?.original?.user, type: 'edit' })
-                            }}>Edit
-                                <FilePenLine className="h-4 w-4 ml-auto" />
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => {
-                                onOpen("delete-patient", { id: row.original.id })
-                            }}>Delete
-                                <Trash2 className="h-4 w-4 ml-auto" />
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+
+                    <div>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant={'ghost'} size='sm' className='p-0' onClick={() => {
+                                    setSelectedPatient(row.original)
+                                    router.push(`/workspace/${orgId}/patient/${row.original.id}/profile`)
+                                }}>
+                                    <CircleUser size={18} className='cursor-pointer' />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>View Profile</p>
+                            </TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant={'ghost'} size='sm' className='p-0' onClick={() => { onOpen("view-patient", { user: row?.original?.user }) }}>
+                                    <CalendarClock size={18} className='cursor-pointer' />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Book Appointment</p>
+                            </TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant={'ghost'} size='sm' className='p-0' onClick={() => { onOpen("view-patient", { user: row?.original?.user }) }}>
+                                    <FileSliders size={18} className='cursor-pointer' />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Add Note</p>
+                            </TooltipContent>
+                        </Tooltip>
+
+
+                    </div>
                 )
             },
         },
 
     ]
 
+
+
     return (
-        <div className='absolute inset-0 flex flex-col gap-2 p-2'>
-            <div className='w-full dark:bg-[#151D24] p-4 rounded-lg border flex flex-row items-center justify-between'>
-                <div>
-                    <h2 className='text-xl'>Patients</h2>
-                    <h2 className='text-xs text-white/50'>
-                        Search and access patient records using multiple criteria for efficient clinical operations
-                    </h2>
-                </div>
-                {/* <Button variant='outline' size='sm' onClick={() => { onOpen("patient-crud", { type: 'add' }) }}>Add Patient</Button> */}
-                <ButtonGroup>
-                    {nav.map((item) => (
-                        <Button
-                            key={item.title} variant='ghost'
-                            className={`border w-40 capitalize hover:bg-primary/20 dark:hover:bg-darkFocusColor ${active.title === item.title && 'bg-primary/20 dark:bg-darkFocusColor'}`}
-                            onClick={() => { setActive(item) }}
-                        >
-                            <DynamicIcon name={item.icon} />
-                            <span>{item.title}</span>
-                        </Button>
-                    ))}
-                </ButtonGroup>
-            </div>
-
-
-            {/* <div className='w-full dark:bg-[#151D24] p-4 rounded-lg border'>
-                <DataTable columns={columns} data={tempData} />
-            </div> */}
-            <div className='h-full flex flex-grow w-full dark:bg-darkSecondaryBackground rounded-md py-2'>
-                <ScrollArea className='h-[85vh] w-full p-2'>
-                    {active.component}
-                </ScrollArea>
-            </div>
-
+        <div className='flex flex-col gap-2'>
+            <DataTable columns={columns} data={tempData} className='border' />
         </div>
     )
 }
+
 
 
 function DataTable({ columns, data, }) {
@@ -305,6 +253,7 @@ function DataTable({ columns, data, }) {
     const [columnFilters, setColumnFilters] = useState([])
     const [columnVisibility, setColumnVisibility] = useState({})
     const [rowSelection, setRowSelection] = useState({})
+    const { onOpen, refresh } = useModal()
     const table = useReactTable({
         data,
         columns,
@@ -327,29 +276,22 @@ function DataTable({ columns, data, }) {
     })
 
     return (
-        <div>
-            <div className="flex items-center py-4">
+        <div className='flex flex-col gap-4'>
 
-                {/* <Input
-                    placeholder="Search..."
-                    value={(table.getColumn("displayName")?.getFilterValue()) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("displayName")?.setFilterValue(event.target.value)
-
-                    }
-                    className="max-w-sm"
-                /> */}
-
-                <Input
-                    placeholder="Search..."
-                    value={globalFilter ?? ''}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
-                    className="max-w-sm"
-                />
+            <div className="flex flex-row gap-4 p-2 rounded-md border mb-10">
+                <div className="flex items-center space-x-2 flex-1">
+                    <Search size={18} />
+                    <Input
+                        placeholder="Search by patient name, ID, phone, or date of birth..."
+                        value={globalFilter ?? ''}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        className=" w-full border-0 outline-none focus:ring-0  "
+                    />
+                </div>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
+                        <Button variant="outline" size={'sm'} className="ml-auto">
                             Columns
                         </Button>
                     </DropdownMenuTrigger>
@@ -375,15 +317,18 @@ function DataTable({ columns, data, }) {
                             })}
                     </DropdownMenuContent>
                 </DropdownMenu>
+
+
+                <Button variant='outline' size='sm' onClick={() => { onOpen("patient-crud", { type: 'add' }) }}>Add Patient</Button>
             </div>
 
-            <div>
+            <div className='border rounded-md'>
                 <Table>
-                    <TableHeader >
+                    <TableHeader className='h-16'>
 
                         {table?.getHeaderGroups().map((headerGroup) => (
 
-                            <TableRow key={headerGroup.id}>
+                            <TableRow key={headerGroup.id} className=''>
                                 {headerGroup.headers.map((header) => {
                                     return (
                                         <TableHead key={header.id} className='text-md font-semibold'>
@@ -408,7 +353,7 @@ function DataTable({ columns, data, }) {
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
-
+                                    className=''
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id} className='text-[14    px]'>

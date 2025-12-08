@@ -273,31 +273,16 @@ export default function OrgSidebar({ storageKey = 'sidebar-state' }) {
                         </div>
                     </SidebarItem>
 
-                    <SidebarItem onExpand={onExpand} title={'Patient Management'} value={'patient'} icon='Stethoscope' >
 
-                        <div className='flex flex-col' onClick={() => { console.log('first') }}>
-
-                            <SidebarSubItem
-                                title='Patients'
-                                link={`/workspace/${server?.id}/patient`}
-                                selected={url.split('/')[3] === 'patient'}
-                            />
-
-                            <SidebarSubItem
-                                title='OPD/IPD'
-                                link={`/workspace/${server?.id}/opdipd`}
-                                selected={url.split('/')[3] === 'opdipd'}
-                            />
-
-                        </div>
-                    </SidebarItem>
 
                     <SidebarSingleItem
-                        title='Schedules'
-                        link={`/workspace/${server?.id}/schedule`}
-                        selected={url.split('/')[3] === 'schedule'}
-                        icon='calendar-clock'
+                        title='Patient Management'
+                        link={`/workspace/${server?.id}/patient`}
+                        selected={url.split('/')[3] === 'patient'}
+                        icon='stethoscope'
                     />
+
+
 
                     <SidebarSingleItem
                         title='Services'

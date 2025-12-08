@@ -9,6 +9,10 @@ import CategoryModal from './CategoryModal';
 import ConfirmDialog from './ConfirmDialog';
 import SearchSuggestions from '../SearchSuggestions';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Plus } from 'lucide-react';
 
 const CategoryTreeInteractive = ({ initialCategories }) => {
     const [categories, setCategories] = useState(initialCategories);
@@ -32,8 +36,6 @@ const CategoryTreeInteractive = ({ initialCategories }) => {
         type: 'warning',
         onConfirm: () => { }
     });
-
-
 
     const flattenCategories = useCallback((cats, result = []) => {
         cats?.forEach(cat => {
@@ -202,6 +204,7 @@ const CategoryTreeInteractive = ({ initialCategories }) => {
                             <Icon name="PlusIcon" size={16} variant="outline" />
                             Add Category
                         </Button>
+
                     </div>
                 </div>
 
@@ -253,21 +256,8 @@ const CategoryTreeInteractive = ({ initialCategories }) => {
                     onClose={() => setShowDetails(false)}
                 />
             </div>
-            {/* Details Panel - Mobile Overlay */}
-            {showDetails && (
-                <div className="fixed inset-0 z-[300] lg:hidden">
-                    <div
-                        className="absolute inset-0 bg-text-primary/50 backdrop-blur-sm"
-                        onClick={() => setShowDetails(false)}
-                    />
-                    <div className="absolute inset-y-0 right-0 w-full max-w-md bg-surface shadow-elevation-3">
-                        <CategoryDetails
-                            category={selectedCategory}
-                            onClose={() => setShowDetails(false)}
-                        />
-                    </div>
-                </div>
-            )}
+
+
             {/* Modals */}
             <CategoryModal
                 isOpen={modalState?.isOpen}
@@ -293,3 +283,4 @@ const CategoryTreeInteractive = ({ initialCategories }) => {
 
 
 export default CategoryTreeInteractive;
+
