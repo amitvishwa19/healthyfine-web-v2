@@ -22,7 +22,7 @@ import { useContent } from '../_provider/contentProvider';
 
 
 
-export default function page() {
+export default function page({ post, onSave, onCancel }) {
     const { orgId } = useParams()
     const { data: session } = useSession()
     const { categories, setPosts } = useContent()
