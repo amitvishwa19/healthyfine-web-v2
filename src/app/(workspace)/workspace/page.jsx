@@ -1,15 +1,16 @@
 'use client'
 import React, { useContext, useEffect, useState } from 'react'
 import { Poppins, Unbounded } from 'next/font/google'
-import { cn } from '@/lib/utils'
-import { redirect, useRouter } from 'next/navigation'
-import { OrgContext, useOrg } from '@/providers/OrgProvider'
 import { useSession } from 'next-auth/react'
 import Lottie, { useLottie } from "lottie-react";
 import lotte from "@/assets/lottie/loading.json";
 import { useDispatch } from 'react-redux'
 import { Activity, Heart, Shield, Users } from 'lucide-react'
 import coverImage from '@/assets/images/auth_cover_image.jpg'
+import { useRouter } from 'next/navigation';
+import { useOrg } from '@/providers/OrgProvider';
+import { SetupModal } from '@/components/setup/SetupModal';
+import { SetupWizard } from '@/components/setup/SetupWizard';
 
 
 const textFont = Poppins({
@@ -27,9 +28,25 @@ export default function WorkspacePage() {
     const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false)
 
+    const [isSetupComplete, setIsSetupComplete] = useState(false);
+    const [hospitalData, setHospitalData] = useState(null);
+
+    const handleSetupComplete = (data) => {
+        setHospitalData(data);
+        setIsSetupComplete(true);
+        router.push(`/workspace/${server?.id}`)
+    };
+
     useEffect(() => {
         if (server) {
-            router.push(`/workspace/${server?.id}`)
+            console.log(server)
+            if (!server.setup) {
+                setIsSetupComplete(false)
+                console.log('@server setup is incomplete please complete it')
+            } else {
+                router.push(`/workspace/${server?.id}`)
+            }
+
         }
     }, [server])
 
@@ -46,7 +63,10 @@ export default function WorkspacePage() {
         return () => clearInterval(timer);
     }, [loading]);
 
-
+    const handleSetupClose = () => {
+        console.log('SetupCLose')
+        setSetup(false)
+    }
 
     const options = {
         animationData: lotte,
@@ -144,8 +164,11 @@ export default function WorkspacePage() {
                     </div>
                 </div>
             </div>
+
+            <SetupWizard open={!isSetupComplete} onComplete={handleSetupComplete} />
         </div>
     )
 }
 
 // style = {{ backgroundImage: `url(${string.orgCoverImage.default.src}) `, backgroundSize: 'cover', backgroundRepeat: "no-repeat", opacity: 0.2 }}
+
