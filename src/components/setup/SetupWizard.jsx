@@ -129,7 +129,7 @@ export function SetupWizard({ open, onComplete }) {
 
     return (
         <Dialog open={open}>
-            <DialogContent className="max-w-5xl p-0 gap-0 bg-card border-border overflow-hidden min-h-[70%] max-h-[90vh] min-w-[60%] flex flex-col [&>button:last-child]:hidden ">
+            <DialogContent className="max-w-5xl p-0 gap-0 bg-card border-border overflow-hidden max-h-[90vh] min-w-[60%] flex flex-col [&>button:last-child]:hidden ">
 
                 <DialogHeader className="mb-0 pb-0 hidden">
                     <DialogTitle className="sr-only">
@@ -363,8 +363,9 @@ export function SetupWizard({ open, onComplete }) {
                                     {formData.departments.length} department(s) selected
                                 </span>
                                 <Button
+                                    variant='outline'
                                     onClick={() => setFormData({ ...formData, departments: departmentOptions })}
-                                    className="text-sm text-primary hover:underline"
+                                    className="text-sm text-primary"
                                 >
                                     Select All
                                 </Button>
