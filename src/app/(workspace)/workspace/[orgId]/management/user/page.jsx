@@ -97,7 +97,7 @@ export default function UserPage() {
                 } else {
                     return (
                         <Badge variant="outline" className='bg-yellow-500/10 text-yellow-500 border-yellow-500/20'>
-                            No Permission
+                            No Roles
                         </Badge>
                     )
                 }
@@ -171,8 +171,8 @@ export default function UserPage() {
     return (
 
 
-        <div className='flex flex-col gap-4'>
-            <div className='w-full dark:bg-[#151D24] p-4 rounded-lg border flex flex-row items-center justify-between'>
+        <div className='absolute inset-0 flex flex-col gap-2 p-2'>
+            <div className='w-full dark:bg-darkSecondaryBackground p-4 rounded-lg border flex flex-row items-center justify-between'>
                 <div>
                     <h2 className='text-xl'>Users</h2>
                     <h2 className='text-xs text-white/50'>All users associated to organization</h2>
@@ -181,7 +181,7 @@ export default function UserPage() {
             </div>
 
 
-            <div className='w-full dark:bg-[#151D24] p-4 rounded-lg border'>
+            <div className='w-full h-full dark:bg-darkSecondaryBackground p-4 rounded-lg border'>
                 <DataTable columns={columns} data={users} />
             </div>
         </div>
@@ -259,7 +259,7 @@ function DataTable({ columns, data, }) {
                 </DropdownMenu>
             </div>
 
-            <div>
+            <div className='border rounded-md'>
                 <Table>
                     <TableHeader >
 
