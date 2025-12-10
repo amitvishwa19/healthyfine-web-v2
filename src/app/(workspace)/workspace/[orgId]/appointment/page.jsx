@@ -143,7 +143,7 @@ export default function Appointments() {
                         Book Appointment
                     </Button> */}
 
-                    <Button variant={'save'} size={'sm'} className='' onClick={() => { onOpen('add-appointment-modal') }}>
+                    <Button variant={'save'} size={'sm'} className='' onClick={() => { onOpen('add-appointment-modal', 'add') }}>
                         <Calendar />
                         Book Appointment
                     </Button>
