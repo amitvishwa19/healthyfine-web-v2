@@ -5,19 +5,10 @@ import { useSession } from 'next-auth/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLoading } from '@/redux/slices/org'
 import { ROLE } from '@prisma/client'
-import { useModal } from '@/hooks/useModal'
-import { AlertTriangle, BedDouble, Calendar, FlaskConical, Pill, Receipt, Trello } from 'lucide-react'
 import { getDoctors } from './(misc)/_actions/get-doctors'
 import { getAllUsers } from './(misc)/_actions/get-users'
 import { getAppointments } from './appointment/_actions/get-appointments'
 import { setAppointments, setDoctors, setPatients } from './appointment/_redux/appointment-slice'
-import { AppointmentCard } from './appointment/_components/cards/AppointmentCard'
-import { EmergencyAlertCard } from './appointment/_components/cards/EmergencyAlertCard'
-import { LabTestCard } from './appointment/_components/cards/LabTestCard'
-import { PrescriptionCard } from './appointment/_components/cards/PrescriptionCard'
-import { BedStatusCard } from './appointment/_components/cards/BedStatusCard'
-import { MedicalRecordCard } from './appointment/_components/cards/MedicalRecordCard'
-import { BillingCard } from './appointment/_components/cards/BillingCard'
 import { StatsCard } from './appointment/_components/cards/StatsCard'
 import { useOrg } from '@/providers/OrgProvider'
 import AppointmentsList from './(misc)/_components/dashboard/AppointmentsList'
@@ -29,6 +20,9 @@ import { UpcomingTasks } from './(misc)/_components/dashboard/UpcomingTasks'
 import { InventoryStatus } from './(misc)/_components/dashboard/InventoryStatus'
 import { NotificationsPanel } from './(misc)/_components/dashboard/NotificationsPanel'
 import { RevenueChart } from './(misc)/_components/dashboard/RevenueChart'
+import moment from 'moment'
+
+
 
 
 export default function Dashboard() {
@@ -81,6 +75,35 @@ export default function Dashboard() {
         }
     })
 
+    const formatChangeFromYesterday = (today, yesterday) => {
+        if (!yesterday) return '0% from yesterday' // avoid divide by 0
+
+        const change = ((today - yesterday) / yesterday) * 100
+        const rounded = Math.round(change) // or toFixed(1)
+
+        const sign = rounded > 0 ? '+' : ''
+        return `${sign}${rounded}% from yesterday`
+    }
+
+    const todayAppointments = server?.appointments?.filter(item => moment(item?.date).format('Do MMM YY') === moment(new Date()).format('Do MMM YY'))
+
+    const yesterday = new Date().setDate(new Date().getDate() - 1);
+    const yesterdayAppointments = server?.appointments?.filter(item => moment(item?.date).format('Do MMM YY') === moment(yesterday).format('Do MMM YY'))
+    const yesterdayCompletedCharge = yesterdayAppointments?.filter(appt => appt.status === 'completed').reduce((sum, appt) => sum + (appt?.type?.charge ?? 0), 0)
+
+
+    //.reduce((total, appointment) => total + (appointment.fee || 0), 0);
+    const todaysRevenu = todayAppointments?.filter(a => a.status === 'completed');
+    const todaysCompletedCharge = todayAppointments?.filter(appt => appt.status === 'completed').reduce((sum, appt) => sum + (appt?.type?.charge ?? 0), 0)
+
+    //console.log('yesterdayAppointments', yesterdayAppointments)
+    //console.log('yesterdayCompletedCharge', yesterdayCompletedCharge)
+    //console.log('totalCompletedCharge', todaysCompletedCharge)
+
+    //console.log('@todayAppointments', todayAppointments)
+    //console.log('All Appointments', server?.appointments)
+
+
 
 
     return (
@@ -96,19 +119,19 @@ export default function Dashboard() {
             <div className='grid gap-2 md:grid-cols-2 lg:grid-cols-4'>
 
                 <StatsCard
-                    title="Total Patients"
-                    value='142'
-                    change='+12% from yesterday'
+                    title="Today's Revenue"
+                    value={`₹ ${todaysCompletedCharge || 0}`}
+                    change={formatChangeFromYesterday(todaysCompletedCharge, yesterdayCompletedCharge)}
                     changeType='positive'
-                    icon={'users'}
+                    icon={'indian-rupee'}
                     iconColor='#00FFFF'
                     iconClassName='bg-[#172E3A]'
                 />
 
                 <StatsCard
                     title="Today's Appointments"
-                    value='5'
-                    change='5 pending'
+                    value={todayAppointments?.length || 0}
+                    change={`${todayAppointments?.filter(a => a.status !== 'completed').length} pending`}
                     changeType='positive'
                     icon={'calendar'}
                     iconColor='#7FFFD4'
@@ -142,8 +165,13 @@ export default function Dashboard() {
 
                 {/* Left Column - Appointments */}
                 <div className="lg:col-span-2 space-y-2">
-                    <AppointmentsList />
+                    <AppointmentsList appointments={todayAppointments} count={5} />
                     <RecentPatients />
+                    <div className='grid gap-2 lg:grid-cols-2'>
+                        <UpcomingTasks />
+                        <InventoryStatus />
+                    </div>
+                    <RevenueChart />
                 </div>
 
                 {/* Right Column - Quick Actions & Overview */}
@@ -151,22 +179,10 @@ export default function Dashboard() {
                     <QuickActions />
                     <DoctorSchedule />
                     <ClinicOverview />
+                    <NotificationsPanel />
                 </div>
 
-
             </div>
-
-            <div className="grid gap-2 lg:grid-cols-3">
-                <UpcomingTasks />
-                <InventoryStatus />
-                <NotificationsPanel />
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-3">
-                <RevenueChart />
-
-            </div>
-
             {/* <div className='h-96 bg-red-200' /> */}
 
         </div>

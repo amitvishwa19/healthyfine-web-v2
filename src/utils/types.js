@@ -69,3 +69,24 @@ export const ORGTYPE = [
     { type: 'Nursing', value: 'nursing' },
     { type: 'Pharmacy', value: 'pharmacy' },
 ]
+
+export const visitPurposes = [
+    { value: 'consultation', label: 'Consultation' },
+    { value: 'follow_up', label: 'Follow‑up' },
+    { value: 'emergency', label: 'Emergency' },
+    { value: 'routine_checkup', label: 'Routine Check-up' },
+    { value: 'diagnostic_tests', label: 'Diagnostic Tests / Lab' },
+    { value: 'imaging', label: 'Imaging (X-ray, MRI, CT)' },
+    { value: 'vaccination', label: 'Vaccination / Immunization' },
+    { value: 'procedure', label: 'Minor Procedure' },
+    { value: 'surgery', label: 'Surgery / Operation' },
+    { value: 'therapy', label: 'Physiotherapy / Rehabilitation' },
+    { value: 'medication_refill', label: 'Medication Refill' },
+    { value: 'pre_op', label: 'Pre-operative Evaluation' },
+    { value: 'post_op', label: 'Post-operative Follow-up' },
+    { value: 'health_check', label: 'Full Health Check-up' },
+    { value: 'counseling', label: 'Counseling / Mental Health' },
+    { value: 'antenatal', label: 'Antenatal / Pregnancy Visit' },
+    { value: 'pediatric', label: 'Pediatric Visit' },
+    { value: 'teleconsultation', label: 'Teleconsultation / Video Call' },
+]

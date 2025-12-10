@@ -1,21 +1,18 @@
 
 import React, { useEffect, useState } from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, } from "@/components/ui/dialog"
-import { APPOINTMENTTYPE, hospitalDefaultSettings } from '@/utils/types'
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "@/components/ui/sheet"
+import { APPOINTMENTTYPE, hospitalDefaultSettings, visitPurposes } from '@/utils/types'
 import { ROLE } from '@prisma/client'
 import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Loader, Mic, Play, Square, SquarePause } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { DatePicker } from '@/components/global/DatePicker'
+import { CalendarIcon, Loader, Mic, Play, Save, Square, SquarePause } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import moment from 'moment'
 import { useAction } from '@/hooks/use-action'
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { newAppointment } from '../_actions/new-appointment'
 import { useOrg } from '@/providers/OrgProvider'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
@@ -23,11 +20,14 @@ import { Avatar, AvatarFallback, AvatarImage, } from "@/components/ui/avatar"
 import { useModal } from '@/hooks/useModal'
 import { DynamicIcon } from 'lucide-react/dynamic';
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { setAppointments } from '../_redux/appointment-slice'
-import { newPost } from '../../content/_actions/new-post'
+import { VoiceToText } from '../../(misc)/_components/VoiceToText'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { cn } from '@/lib/utils'
 
 
-export default function AddAppointment() {
+
+export default function AddAppointmentModal() {
     const { data: session } = useSession()
     const { orgId } = useParams()
     const { server, servers, users, refreshServer } = useOrg()
@@ -37,7 +37,7 @@ export default function AddAppointment() {
     const [listning, setListning] = useState(false)
     const [pauseListning, setPauseListning] = useState(false)
     const { isOpen, onClose, type: dtype, data } = useModal();
-    const isModalOpen = isOpen && dtype === "addappointment";
+    const isModalOpen = isOpen && dtype === "add-appointment-modal";
 
     const [doctor, setDoctor] = useState({})
     const [slot, setSlot] = useState({ slot: 'morning', start: '09:00 AM', end: '01:00 PM', avaliable: false })
@@ -46,6 +46,10 @@ export default function AddAppointment() {
     const [type, setType] = useState({ type: 'clinic', status: false, charge: 250, icon: 'hospital' })
     const options = doctor?.setting?.consultationOptions ? doctor?.setting?.consultationOptions : hospitalDefaultSettings?.consultationOptions
 
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate())
+    yesterday.setHours(0, 0, 0, 0) // normalize time
+
     const [appointmentData, setAppointmentData] = useState({
         patientId: null,
         doctorId: null,
@@ -53,11 +57,10 @@ export default function AddAppointment() {
         date: moment().format(),
         slot: hospitalDefaultSettings?.timing[0],
         time: null,
+        visitType: 'consultation',
         type: { type: 'clinic', status: false, charge: 250, icon: 'hospital' },
         note: ''
     })
-
-
 
     function getTimePeriod() {
         const now = new Date();
@@ -69,7 +72,6 @@ export default function AddAppointment() {
         if (hours >= 20 && hours < 24) return "night";
         return "midnight"; // covers hours 0–4
     }
-
 
     function futureDate() {
         const dateString = "2025-12-02T00:00:00+05:30"
@@ -153,30 +155,6 @@ export default function AddAppointment() {
         }
     }, [server, isModalOpen])
 
-
-    // ------------------------------------Voice note-------------------------------------------
-    const {
-        transcript,
-        listening,
-        resetTranscript,
-        browserSupportsSpeechRecognition
-    } = useSpeechRecognition();
-
-    useEffect(() => {
-        setAppointmentData({ ...appointmentData, note: transcript })
-    }, [transcript])
-
-    const startListning = () => {
-        setListning(!listning)
-        SpeechRecognition.startListening({ continuous: true, language: 'en-IN' })
-    }
-
-    if (!browserSupportsSpeechRecognition) {
-        return <span>Browser doesn't support speech recognition.</span>;
-    }
-    // ------------------------------------Voice note-------------------------------------------
-
-
     const handleOpenChange = () => {
         onClose()
         if (isModalOpen) {
@@ -187,6 +165,7 @@ export default function AddAppointment() {
                 date: moment().format(),
                 slot: hospitalDefaultSettings?.timing[0],
                 time: null,
+                visitType: 'consultation',
                 type: { type: 'clinic', status: false, charge: 250, icon: 'hospital' },
                 note: ''
             })
@@ -199,8 +178,6 @@ export default function AddAppointment() {
     }
 
     const handleSaveData = async () => {
-        //console.log('@appointment redus data', selectedDoctor, selectedPatient, appointmentSelectedSlot, appointmentIntervel)
-        console.log('@appointment redus data', appointmentData)
 
         if (!appointmentData.doctorId) return toast.error('Please select a Doctor to book appointment')
         if (!appointmentData.patientId) return toast.error('Please select a Patient to book appointment')
@@ -209,51 +186,47 @@ export default function AddAppointment() {
         if (!appointmentData.time) return toast.error('Please select a Time to book appointment')
         if (!appointmentData.type) return toast.error('Please select a appointment type to book appointment')
 
-        // //console.log('@new appointment data', appointmentData)
+        try {
+            setLoading(true)
+            toast.loading('Please wait while we are creating new appointment', { id: 'new-appointment' })
+            await execute({ data: appointmentData })
+        } catch (error) {
 
-        setLoading(true)
-        toast.loading('Please wait while we are creating new appointment', { id: 'new-appointment' })
-        execute({
-            patientId: appointmentData.patientId,
-            doctorId: appointmentData.doctorId,
-            date: appointmentData.date,
-            slot: appointmentData.slot,
-            time: appointmentData.time,
-            type: appointmentData.type,
-            note: appointmentData.note,
-            role: session.user.role,
-            serverId: orgId
-        })
-
-
+        } finally {
+            setLoading(false)
+        }
 
     }
 
-    const { execute } = useAction(newPost, {
+    const { execute } = useAction(newAppointment, {
         onSuccess: (data) => {
-
+            setLoading(false)
+            refreshServer().then((e) => {
+                console.log(e)
+                toast.success('New appointment created successfully', { id: 'new-appointment' });
+                handleOpenChange()
+            })
         },
         onError: (error) => {
-
+            console.log(error)
+            handleOpenChange()
+            setLoading(false)
         }
     })
 
-
-
-
     return (
-        <Dialog open={isModalOpen} onOpenChange={() => { handleOpenChange() }}>
+        <Sheet open={isModalOpen} onOpenChange={() => { handleOpenChange() }}>
 
 
-            <DialogContent open={true} className="    p-0  dark:bg-darkPrimaryBackground [&>button:last-child]:hidden overflow-hidden">
+            <SheetContent open={true} className="p-0 dark:bg-darkPrimaryBackground [&>button:last-child]:hidden overflow-hidden min-w-[50%]">
 
-                <DialogHeader className={'hidden'}>
-                    <DialogTitle>Edit profile</DialogTitle>
-                    <DialogDescription>
+                <SheetHeader className={'hidden'}>
+                    <SheetTitle>Edit profile</SheetTitle>
+                    <SheetDescription>
                         Make changes to your profile here. Click save when you&apos;re
                         done.
-                    </DialogDescription>
-                </DialogHeader>
+                    </SheetDescription>
+                </SheetHeader>
 
                 <ScrollArea className=' mt-0 p-4 flex flex-col gap-4 h-full'>
 
@@ -264,7 +237,7 @@ export default function AddAppointment() {
 
                             {/* Doctor */}
                             <div className='flex flex-col gap-2 w-full'>
-                                <Label >Select Doctor</Label>
+                                <Label >Select Doctor *</Label>
                                 <Select
                                     disabled={server?.members.filter(member => member.user.role === ROLE.DOCTOR).length === 0 ? true : false}
                                     defaultValue={server?.userId}
@@ -302,7 +275,7 @@ export default function AddAppointment() {
 
                             {/* Patients */}
                             <div className='flex flex-col gap-2 w-full'>
-                                <Label className='text-sm'>Select Patient</Label>
+                                <Label className='text-sm'>Select Patient *</Label>
                                 <Select
                                     disabled={users?.filter(user => user.role === ROLE.PATIENT).length === 0 ? true : false}
                                     onValueChange={(id) => {
@@ -337,25 +310,48 @@ export default function AddAppointment() {
                                 </Select>
                             </div>
 
-                            {/* Date Picker */}
-                            <div className='flex flex-col gap-2'>
-                                <Label>Appointment Date</Label>
-                                <div className='flex flex-row gap-2'>
-                                    <Input
-                                        type="text"
-                                        disabled
-                                        value={moment(appointmentData.date).format('Do MMM YY')}
-                                        onChange={() => { }}
-                                    />
+                            {/* Appointment Date */}
+                            <div className='flex flex-col gap-2 w-full'>
+                                <Label>Appointment date *</Label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="ghost"
+                                            className={cn("w-full pl-3 text-left font-normal border",
+                                                "text-muted-foreground")}>
+                                            {<span>{moment(appointmentData.date).format('Do MMM YY')}</span>}
+                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0 bg-popover z-50"
+                                        align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={''}
+                                            onSelect={(e) => {
+                                                console.log(moment(e).format())
+                                                setAppointmentData({ ...appointmentData, date: moment(e).format() })
+                                            }}
+                                            disabled={(date) => date < yesterday}
+                                            className={cn("p-3  nter - events - auto dark:bg-darkPrimaryBackground w-[250px] outline-none")}
 
-                                    <div className='flex  rounded-lg'>
-                                        <DatePicker
-                                            onChange={(e) => {
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
 
-                                                setAppointmentData({ ...appointmentData, date: e })
-                                            }} />
-                                    </div>
-                                </div>
+                            {/* Appointment visit type */}
+                            <div>
+                                <Label>Visit type *</Label>
+                                <Select defaultValue='consultation' onValueChange={(e) => { setAppointmentData({ ...appointmentData, visitType: e }) }}>
+                                    <SelectTrigger className="">
+                                        <SelectValue placeholder="Select Visit Purpose" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {visitPurposes.map(item => (
+                                            <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
 
                             {/* Slot Selector */}
@@ -370,7 +366,7 @@ export default function AddAppointment() {
                                                 <Button key={index}
                                                     variant={'ghost'}
                                                     disabled={!item.avaliable}
-                                                    className={`flex flex-col p-4 h-12 w-full 
+                                                    className={`flex flex-row p-4 h-12 w-full 
                                                                 bg-primary/20 items-center justify-center rounded-md 
                                                                 dark:bg-darkFocusColor/60 
                                                                 hover:dark:bg-darkFocusColor
@@ -385,8 +381,10 @@ export default function AddAppointment() {
                                                     }}
                                                 >
 
-                                                    <span className={`capitalize ${!item.avaliable && ' line-through'}`}>{item.slot}</span>
-                                                    <span className={` capitalize text-xs  ${!item.avaliable && ' line-through'}`}>{item.start} - {item.end}</span>
+                                                    <div className='flex flex-col items-center justify-center'>
+                                                        <span className={`capitalize ${!item.avaliable && ' line-through'}`}>{item.slot}</span>
+                                                        <span className={` capitalize text-xs text-muted-foreground  ${!item.avaliable && ' line-through'}`}>{item.start} - {item.end}</span>
+                                                    </div>
                                                 </Button>
 
                                             </div>
@@ -472,41 +470,16 @@ export default function AddAppointment() {
                                 </div>
                             </div>
 
-
+                            {/* Appointment Notes */}
                             <div className='flex flex-col gap-2'>
                                 <div className='flex flex-row gap-2 items-center'>
                                     <Label className='text-sm font-light'>Notes</Label>
-                                    <div className='flex flex-row gap-2 '>
-                                        <Mic
-                                            className={`cursor-pointer ${listning && 'text-red-600 font-bold animate-ping'}`}
-                                            size={18}
-                                            onClick={() => {
-                                                startListning()
-                                            }}
-                                        />
-                                        {
-                                            listning && (
-                                                <div className='flex flex-row gap-2'>
-                                                    {pauseListning && <Play size={18} className='cursor-pointer text-green-500' onClick={() => {
-                                                        setPauseListning(false)
-                                                        SpeechRecognition.startListening()
-                                                    }} />}
-                                                    {!pauseListning && <SquarePause size={18} className='cursor-pointer' onClick={() => {
-                                                        setPauseListning(true)
-                                                        SpeechRecognition.stopListening()
-                                                    }} />}
-                                                    <Square size={18} className='cursor-pointer text-red-600' onClick={() => {
-                                                        setListning(false)
-                                                        SpeechRecognition.abortListening()
-                                                        //resetTranscript()
-                                                    }} />
-                                                </div>
-                                            )
-                                        }
+                                    <VoiceToText onChange={(e) => {
+                                        setAppointmentData({ ...appointmentData, note: e })
+                                    }} />
 
-                                    </div>
                                 </div>
-                                <Textarea className='text-xs' rows='4' disabled={loading} value={appointmentData.note} onChange={(e) => { setAppointmentData({ ...appointmentData, note: e.target.value }) }} />
+                                <Textarea className='text-xs' rows='6' disabled={loading} value={appointmentData.note} onChange={(e) => { setAppointmentData({ ...appointmentData, note: e }) }} />
 
                             </div>
 
@@ -516,7 +489,7 @@ export default function AddAppointment() {
                         <div className='flex flex-row items-center gap-2 justify-end'>
                             <Button disabled={loading} variant="ghost" size={'sm'} onClick={() => { handleOpenChange() }}>Cancel</Button>
                             <Button disabled={loading} variant="save" size={'sm'} onClick={() => { handleSaveData() }}>
-                                {loading && <Loader className=' animate-spin' />}
+                                {loading ? <Loader className=' animate-spin' /> : <Save />}
                                 Book Now
                             </Button>
                         </div>
@@ -526,8 +499,8 @@ export default function AddAppointment() {
 
 
 
-            </DialogContent>
+            </SheetContent>
 
-        </Dialog>
+        </Sheet>
     )
 }

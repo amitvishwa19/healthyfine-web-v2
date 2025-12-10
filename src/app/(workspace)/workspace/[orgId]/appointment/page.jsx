@@ -16,7 +16,7 @@ import { DynamicIcon } from 'lucide-react/dynamic';
 import EditAppointment from './_components/EditAppointment'
 import { DatePicker } from '@/components/global/DatePicker'
 import { setSelectedAppointment, setSelectedAppointments } from './_redux/appointment-slice'
-import { FilePenLine, MoreHorizontal, Trash2, View } from 'lucide-react'
+import { Calendar, FilePenLine, MoreHorizontal, Trash2, View } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 
 export default function Appointments() {
@@ -135,11 +135,16 @@ export default function Appointments() {
                     <h2 className='text-xl'>Appointments</h2>
                     <h2 className='text-xs text-white/50'>Manage all your appointments</h2>
                 </div>
-                <div>
+                <div className='flex flex-row gap-2'>
                     <Button variant={'outline'} size={'sm'} className='' onClick={() => {
                         //onOpen('appointment-crud', { type: 'add' })
                         router.push(`/workspace/${orgId}/appointment/new`)
                     }}>
+                        Book Appointment
+                    </Button>
+
+                    <Button variant={'outline'} size={'sm'} className='' onClick={() => { onOpen('appointment-crud-modal') }}>
+                        <Calendar />
                         Book Appointment
                     </Button>
                 </div>
@@ -148,10 +153,6 @@ export default function Appointments() {
             <div className='h-full dark:bg-darkSecondaryBackground p-4 rounded-md'>
                 <DataTable columns={columns} data={data} />
             </div>
-
-
-
-
         </div >
     )
 }
@@ -322,7 +323,7 @@ function DataTable({ columns, data, }) {
                 </DropdownMenu>
             </div>
 
-            <div>
+            <div className='border rounded-md'>
                 <Table>
                     <TableHeader >
 
@@ -377,6 +378,7 @@ function DataTable({ columns, data, }) {
                 <div className='flex flex-row gap-4'>
                     <Button variant="outline" size="sm" onClick={() => { table.previousPage() }} disabled={!table.getCanPreviousPage()}>Prev</Button>
                     <Button variant="outline" size="sm" onClick={() => { table.nextPage() }} disabled={!table.getCanNextPage()}>Next</Button>
+
                 </div>
             </div>
 
@@ -389,7 +391,7 @@ const SelectorButton = ({ title, onClick, value }) => {
     return (
         <Button
             variant="secondary"
-            className={`w-[10%] p-2 border rounded-lg cursor-pointer
+            className={`w-[10%] p-2 border rounded-md cursor-pointer
                         flex items-center justify-center hover:bg-slate-400
                         dark:bg-[#0E141B] hover:dark:bg-darkFocusColor hover:bg-primary/10    
                         ${value === title ? 'dark:bg-darkFocusColor bg-primary/10' : ''}`}

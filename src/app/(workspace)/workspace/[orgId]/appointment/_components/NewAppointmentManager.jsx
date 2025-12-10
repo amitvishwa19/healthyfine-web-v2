@@ -178,7 +178,6 @@ export default function NewAppointmentManager() {
 
     }
 
-    // ------------------------------------Voice note-------------------------------------------
     const {
         transcript,
         listening,
@@ -191,8 +190,6 @@ export default function NewAppointmentManager() {
         console.log('transcript', transcript, listening)
     }, [transcript, listening])
 
-    console.log('transcript', transcript)
-
     const startListning = () => {
         setListning(!listning)
         SpeechRecognition.startListening({ continuous: true, language: 'en-IN' })
@@ -201,9 +198,6 @@ export default function NewAppointmentManager() {
     if (!browserSupportsSpeechRecognition) {
         return <span>Browser doesn't support speech recognition.</span>;
     }
-    // ------------------------------------Voice note-------------------------------------------
-
-
 
 
     const { execute } = useAction(newAppointment, {
@@ -231,11 +225,7 @@ export default function NewAppointmentManager() {
     return (
         <div className='absolute inset-0 flex flex-col gap-2 p-2'>
 
-
-
-
             <div className='dark:bg-darkSecondaryBackground rounded-md  flex-1'>
-
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6  h-full flex flex-col flex-1">
@@ -755,9 +745,6 @@ export default function NewAppointmentManager() {
 
 
             </div>
-
-
-
 
         </div >
     )

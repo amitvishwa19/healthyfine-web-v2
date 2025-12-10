@@ -107,7 +107,6 @@ export default function ContentPage() {
     ];
 
 
-    const { onOpen } = useModal()
     return (
         <div className='absolute inset-0 flex flex-col gap-2 p-2'>
 

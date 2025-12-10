@@ -175,25 +175,27 @@ export default function AppointmentCalenderPage() {
                     const isToday = day.toDateString() === new Date().toDateString();
 
                     return (
-                        <Card key={idx} className={cn("p-3 overflow-auto dark:bg-darkFocusColor border ring-[0.4px]", isToday && "ring-[1px] ")}>
-                            <div className="text-center mb-3">
-                                <div className="text-xs text-muted-foreground">{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][idx]}</div>
-                                <div className={cn("text-2xl font-bold", isToday && "text-primary")}>{day.getDate()}</div>
-                            </div>
-                            <div className="space-y-2">
-                                {appointments.map((apt) => (
-                                    <Card key={apt.id} className="p-2 bg-primary/10 border-primary/20">
-                                        <div className="text-xs font-medium text-foreground">{apt.patientName}</div>
-                                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                                            <Clock className="h-3 w-3" />
-                                            <span>{apt.time}</span>
-                                        </div>
-                                        <Badge variant="outline" className={cn("mt-1 text-xs", getStatusColor(apt.status))}>
-                                            {apt.status}
-                                        </Badge>
-                                    </Card>
-                                ))}
-                            </div>
+                        <Card key={idx} className={cn("p-3  dark:bg-darkFocusColor rounded-md border ring-[0.4px] px-0", isToday && "ring-[1px] ")}>
+                            <ScrollArea className=' h-[86vh] p-1'>
+                                <div className="text-center mb-2">
+                                    <div className="text-xs text-muted-foreground">{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][idx]}</div>
+                                    <div className={cn("text-2xl font-bold", isToday && "text-primary")}>{day.getDate()}</div>
+                                </div>
+                                <div className="space-y-2">
+                                    {appointments.map((apt) => (
+                                        <Card key={apt.id} className="p-2 bg-primary/10 border  ring-[0.4px] m-1">
+                                            <div className="text-xs font-medium text-foreground">{apt.patientName}</div>
+                                            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                                                <Clock className="h-3 w-3" />
+                                                <span>{apt.time}</span>
+                                            </div>
+                                            <Badge variant="outline" className={cn("mt-1 text-xs", getStatusColor(apt.status))}>
+                                                {apt.status}
+                                            </Badge>
+                                        </Card>
+                                    ))}
+                                </div>
+                            </ScrollArea>
                         </Card>
                     );
                 })}
