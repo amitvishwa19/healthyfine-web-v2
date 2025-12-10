@@ -66,6 +66,22 @@ export function getAge(dateString) {
     return age < 0 ? 0 : age; // prevent negative age
 }
 
+const getInitials = (fullName) => {
+    if (!fullName) return ''
+
+    const parts = fullName.trim().split(/\s+/)
+
+    if (parts.length === 1) {
+        // Single word: take first 2 letters
+        return parts[0].slice(0, 2).toUpperCase()
+    }
+
+    const first = parts[0][0] || ''
+    const last = parts[parts.length - 1][0] || ''
+
+    return (first + last).toUpperCase()
+}
+
 
 
 

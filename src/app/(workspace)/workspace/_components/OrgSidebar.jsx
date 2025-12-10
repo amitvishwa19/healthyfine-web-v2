@@ -255,31 +255,32 @@ export default function OrgSidebar({ storageKey = 'sidebar-state' }) {
                         </div>
                     </SidebarItem>
 
-                    <SidebarItem onExpand={onExpand} title={'Appointment'} value={'appointment'} icon='Newspaper' >
-                        <div className='flex flex-col' onClick={() => { console.log('first') }}>
-
-                            <SidebarSubItem
-                                title='Appointments'
-                                link={`/workspace/${server?.id}/appointment`}
-                                selected={url.split('/')[3] === 'appointment' && url.split('/').length === 4}
-                            />
-
-                            <SidebarSubItem
-                                title='Appointment Calendar'
-                                link={`/workspace/${server?.id}/appointment/calendar`}
-                                selected={url.split('/')[4] === 'calendar'}
-                            />
-
-                        </div>
-                    </SidebarItem>
-
-
+                    <SidebarSingleItem
+                        title='Appointment'
+                        link={`/workspace/${server?.id}/appointment`}
+                        selected={url.split('/')[3] === 'appointment'}
+                        icon='newspaper'
+                    />
 
                     <SidebarSingleItem
-                        title='Patient Management'
+                        title='Calendar'
+                        link={`/workspace/${server?.id}/calendar`}
+                        selected={url.split('/')[3] === 'calendar'}
+                        icon='calendar-days'
+                    />
+
+                    <SidebarSingleItem
+                        title='Patients'
                         link={`/workspace/${server?.id}/patient`}
                         selected={url.split('/')[3] === 'patient'}
                         icon='stethoscope'
+                    />
+
+                    <SidebarSingleItem
+                        title='Prescriptions'
+                        link={`/workspace/${server?.id}/prescription`}
+                        selected={url.split('/')[3] === 'prescription'}
+                        icon='pill'
                     />
 
 

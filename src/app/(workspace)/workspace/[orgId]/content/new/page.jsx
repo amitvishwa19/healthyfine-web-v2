@@ -18,11 +18,12 @@ import { newPost } from '../_actions/new-post';
 import { useSession } from 'next-auth/react';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { useContent } from '../_provider/contentProvider';
+import DocumentPicker from '../../(misc)/_components/DocumentPicker';
 
 
 
 
-export default function page() {
+export default function page({ post, onSave, onCancel }) {
     const { orgId } = useParams()
     const { data: session } = useSession()
     const { categories, setPosts } = useContent()
@@ -219,44 +220,12 @@ export default function page() {
 
 
                             {/* Cover Image */}
-                            <div className='flex flex-col gap-2' >
-                                <Label>Cover image </Label>
-                                < div >
-                                    <Input
-                                        ref={imgRef}
-                                        disabled={loading}
-                                        type='file'
-                                        accept=".png, .jpg, .jpeg, .webp"
-                                        onChange={handleFileChange}
-                                        className='hidden'
-                                    />
-
-                                    <div
-                                        onClick={handleImageClick}
-                                        className={`relative w-full h-40 ${!preview
-                                            && 'border-2 border-dashed border-border'} rounded-lg 
-                                            flex flex-col items-center justify-center gap-2 
-                                            text-muted-foreground  hover:text-primary 
-                                            transition-colors overflow-hidden cursor-pointer`}
-                                    >
-
-                                        <ImagePlus className="h-8 w-8" />
-                                        <span className="text-sm " > Add featured image </span>
-                                        {
-                                            preview && (
-                                                <div>
-                                                    <CircleX className=' absolute top-2 right-2 z-20' onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setPreview(null)
-                                                    }
-                                                    } />
-                                                    < Image src={preview} fill alt='' className="object-cover z-10" />
-                                                </div>
-                                            )}
-                                    </div>
-                                </div>
-
-                            </div>
+                            <DocumentPicker
+                                title='Thumbnail Image'
+                                type='image'
+                                source=''
+                                onSelect={(e) => { setPostData({ ...postData, thumbnail: e, file: e }) }}
+                            />
 
 
                             < div >
