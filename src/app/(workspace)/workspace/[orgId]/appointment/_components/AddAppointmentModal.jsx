@@ -171,10 +171,6 @@ export default function AddAppointmentModal() {
             })
 
         }
-
-
-
-
     }
 
     const handleSaveData = async () => {
@@ -193,7 +189,7 @@ export default function AddAppointmentModal() {
         } catch (error) {
 
         } finally {
-            setLoading(false)
+
         }
 
     }
@@ -202,13 +198,14 @@ export default function AddAppointmentModal() {
         onSuccess: (data) => {
             setLoading(false)
             refreshServer().then((e) => {
-                console.log(e)
+                setLoading(false)
                 toast.success('New appointment created successfully', { id: 'new-appointment' });
                 handleOpenChange()
             })
         },
         onError: (error) => {
-            console.log(error)
+            toast.error('Oops something went wrong,please try again later', { id: 'new-appointment' });
+            setLoading(false)
             handleOpenChange()
             setLoading(false)
         }

@@ -136,14 +136,14 @@ export default function Appointments() {
                     <h2 className='text-xs text-white/50'>Manage all your appointments</h2>
                 </div>
                 <div className='flex flex-row gap-2'>
-                    <Button variant={'outline'} size={'sm'} className='' onClick={() => {
+                    {/* <Button variant={'outline'} size={'sm'} className='' onClick={() => {
                         //onOpen('appointment-crud', { type: 'add' })
                         router.push(`/workspace/${orgId}/appointment/new`)
                     }}>
                         Book Appointment
-                    </Button>
+                    </Button> */}
 
-                    <Button variant={'outline'} size={'sm'} className='' onClick={() => { onOpen('appointment-crud-modal') }}>
+                    <Button variant={'save'} size={'sm'} className='' onClick={() => { onOpen('add-appointment-modal') }}>
                         <Calendar />
                         Book Appointment
                     </Button>
