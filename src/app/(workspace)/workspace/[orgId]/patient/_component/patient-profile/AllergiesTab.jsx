@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 import Icon from '@/components/ui/AppIcon';
+import { mockPatientData } from './PatientProfilePage';
 
-export default function AllergiesTab({ allergies }) {
+export default function AllergiesTab() {
+    const allergies = mockPatientData.allergies
+
     const getSeverityColor = (severity) => {
         switch (severity) {
             case 'Severe':
@@ -29,7 +32,7 @@ export default function AllergiesTab({ allergies }) {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 w-full">
             {allergies?.length > 0 ? (
                 allergies?.map((allergy) => (
                     <div key={allergy?.id} className="bg-card border border-border rounded-lg p-5 shadow-sm">

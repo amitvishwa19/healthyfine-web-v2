@@ -25,6 +25,11 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar'
 import { cn } from '@/lib/utils'
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs"
+import MedicalHistoryTab from '../../patient/_component/patient-profile/MedicalHistoryTab'
+import MedicationsTab from '../../patient/_component/patient-profile/MedicationsTab'
+import AllergiesTab from '../../patient/_component/patient-profile/AllergiesTab'
+import VisitHistoryTab from '../../patient/_component/patient-profile/VisitHistoryTab'
+import DocumentsTab from '../../patient/_component/patient-profile/DocumentsTab'
 
 
 export default function AddAppointmentModal() {
@@ -237,15 +242,29 @@ export default function AddAppointmentModal() {
                                 <CalendarDays size={16} className='mr-2' />
                                 Book Appointment
                             </TabsTrigger>
-                            <TabsTrigger value="password" className='w-full rounded-md' disabled={true}>
-                                Password
+                            <TabsTrigger value="medicalHistory" className='w-full rounded-md'>
+                                Medical History
+                            </TabsTrigger>
+                            <TabsTrigger value="medication" className='w-full rounded-md'>
+                                Medication
+                            </TabsTrigger>
+                            <TabsTrigger value="allergies" className='w-full rounded-md'>
+                                Allergies
+                            </TabsTrigger>
+                            <TabsTrigger value="visitHistory" className='w-full rounded-md'>
+                                Visit History
+                            </TabsTrigger>
+                            <TabsTrigger value="documents" className='w-full rounded-md'>
+                                Documents
                             </TabsTrigger>
                         </TabsList>
 
 
                         <TabsContent value="appointment">
-                            <div className='flex flex-col gap-6'>
-
+                            <div className='flex flex-col gap-4'>
+                                <div className='self-center'>
+                                    <h2 className='text-lg'>Book New Appointment</h2>
+                                </div>
                                 <div className='flex flex-1 flex-col gap-4 flex-wrap'>
 
 
@@ -510,8 +529,57 @@ export default function AddAppointmentModal() {
                             </div>
                         </TabsContent>
 
-                        <TabsContent value="password" >
-                            Change your password here.
+                        <TabsContent value="medicalHistory" className='p-0'>
+                            <div className='flex flex-col items-center gap-4'>
+
+                                <div className='self-center'>
+                                    <h2 className='text-md'>Medical History</h2>
+                                </div>
+
+                                <MedicalHistoryTab />
+                            </div>
+
+                        </TabsContent>
+
+                        <TabsContent value="medication" >
+                            <div className='flex flex-col items-center gap-4'>
+
+                                <div className='self-center'>
+                                    <h2 className='text-md'>Medications</h2>
+                                </div>
+                                <MedicationsTab />
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="allergies" >
+                            <div className='flex flex-col items-center gap-4'>
+
+                                <div className='self-center'>
+                                    <h2 className='text-md'>Allergies</h2>
+                                </div>
+
+                                <AllergiesTab />
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="visitHistory" >
+                            <div className='flex flex-col items-center'>
+
+                                <div className='self-center'>
+                                    <h2 className='text-lg'>Visit History</h2>
+                                </div>
+                                <VisitHistoryTab />
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="documents" >
+                            <div className='flex flex-col items-center gap-4'>
+
+                                <div className='self-center'>
+                                    <h2 className='text-lg'>Documents</h2>
+                                </div>
+                                <DocumentsTab />
+                            </div>
                         </TabsContent>
                     </Tabs>
 

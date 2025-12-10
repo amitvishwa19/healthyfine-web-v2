@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import Icon from '@/components/ui/AppIcon';
+import { mockPatientData } from './PatientProfilePage';
 
-export default function MedicationsTab({ medications }) {
+export default function MedicationsTab() {
+    const medications = mockPatientData.medications
     const getStatusColor = (status) => {
         switch (status) {
             case 'Active':
@@ -16,7 +18,7 @@ export default function MedicationsTab({ medications }) {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 w-full">
             {medications?.map((medication) => (
                 <div key={medication?.id} className="bg-card border border-border rounded-lg p-5 shadow-sm">
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">

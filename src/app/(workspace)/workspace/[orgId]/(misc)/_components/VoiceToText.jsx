@@ -9,13 +9,11 @@ export const VoiceToText = ({ onChange }) => {
 
     useEffect(() => {
         onChange(transcript)
-        console.log(transcript)
     }, [transcript])
 
 
     useEffect(() => {
         //setAppointmentData({ ...appointmentData, note: transcript })
-        console.log('@listening', listening)
     }, [listening])
 
     const startListning = () => {

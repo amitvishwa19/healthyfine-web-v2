@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Icon from '@/components/ui/AppIcon';
+import { mockPatientData } from './PatientProfilePage';
 
-export default function DocumentsTab({ documents }) {
+export default function DocumentsTab() {
+    const documents = mockPatientData.documents
     const [selectedCategory, setSelectedCategory] = useState('All');
 
     const categories = ['All', 'Lab Results', 'Imaging', 'Prescriptions', 'Consent Forms', 'Other'];
@@ -37,7 +39,7 @@ export default function DocumentsTab({ documents }) {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 w-full">
             <div className="flex flex-wrap gap-2">
                 {categories?.map((category) => (
                     <button
