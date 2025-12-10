@@ -385,6 +385,7 @@ model Appointment {
   additionalNote String?
   doctorNote     String?
   type           Json?
+  visitType      String? @default("consultation")
   status         String  @default("scheduled")
 
   createdAt    DateTime      @default(now())

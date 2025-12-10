@@ -3,16 +3,17 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Icon from '@/components/ui/AppIcon';
+import { mockPatientData } from './PatientProfilePage';
 
-export default function MedicalHistoryTab({ history }) {
+export default function MedicalHistoryTab() {
     const [expandedCondition, setExpandedCondition] = useState(null);
-
+    const history = mockPatientData.medicalHistory
     const toggleCondition = (id) => {
         setExpandedCondition(expandedCondition === id ? null : id);
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-2 w-full">
             <div className="bg-card border border-border rounded-lg p-6">
                 <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
                     <Icon name="ClipboardDocumentListIcon" size={20} className="text-primary" />
@@ -91,26 +92,3 @@ export default function MedicalHistoryTab({ history }) {
     );
 }
 
-MedicalHistoryTab.propTypes = {
-    history: PropTypes?.shape({
-        chronicConditions: PropTypes?.arrayOf(PropTypes?.shape({
-            id: PropTypes?.number?.isRequired,
-            name: PropTypes?.string?.isRequired,
-            diagnosedDate: PropTypes?.string?.isRequired,
-            status: PropTypes?.string?.isRequired,
-            description: PropTypes?.string?.isRequired,
-            treatment: PropTypes?.string?.isRequired
-        }))?.isRequired,
-        pastSurgeries: PropTypes?.arrayOf(PropTypes?.shape({
-            name: PropTypes?.string?.isRequired,
-            date: PropTypes?.string?.isRequired,
-            hospital: PropTypes?.string?.isRequired,
-            notes: PropTypes?.string?.isRequired
-        }))?.isRequired,
-        familyHistory: PropTypes?.arrayOf(PropTypes?.shape({
-            condition: PropTypes?.string?.isRequired,
-            relation: PropTypes?.string?.isRequired,
-            notes: PropTypes?.string?.isRequired
-        }))?.isRequired
-    })?.isRequired
-};

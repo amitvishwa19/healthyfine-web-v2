@@ -43,6 +43,13 @@ export default function TaxanomyPage() {
                 </div>
             </div>
 
+
+            <div className='h-full  w-full dark:bg-darkSecondaryBackground rounded-md py-2'>
+                <ScrollArea className=' mt-0 p-4 flex flex-col gap-4 h-[85vh]  '>
+                    {active.component}
+                </ScrollArea>
+            </div>
+
         </div>
     )
 }

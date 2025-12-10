@@ -28,25 +28,11 @@ export default function WorkspacePage() {
     const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false)
 
-    const [isSetupComplete, setIsSetupComplete] = useState(false);
-    const [hospitalData, setHospitalData] = useState(null);
-
-    const handleSetupComplete = (data) => {
-        setHospitalData(data);
-        setIsSetupComplete(true);
-        router.push(`/workspace/${server?.id}`)
-    };
+    console.log('@server form home', server)
 
     useEffect(() => {
         if (server) {
-            console.log(server)
-            if (!server.setup) {
-                setIsSetupComplete(false)
-                console.log('@server setup is incomplete please complete it')
-            } else {
-                router.push(`/workspace/${server?.id}`)
-            }
-
+            router.push(`/workspace/${server?.id}`)
         }
     }, [server])
 
@@ -62,11 +48,6 @@ export default function WorkspacePage() {
 
         return () => clearInterval(timer);
     }, [loading]);
-
-    const handleSetupClose = () => {
-        console.log('SetupCLose')
-        setSetup(false)
-    }
 
     const options = {
         animationData: lotte,
@@ -165,7 +146,6 @@ export default function WorkspacePage() {
                 </div>
             </div>
 
-            <SetupWizard open={!isSetupComplete} onComplete={handleSetupComplete} />
         </div>
     )
 }

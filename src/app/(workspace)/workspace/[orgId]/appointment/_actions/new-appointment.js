@@ -15,10 +15,12 @@ const NewAppointment = z.object({
     // role: z.string(),
     // serverId: z.string(),
     // note: z.optional(z.string())
-    data: z.any()
+    data: z.any().optional(),
 });
 
 const handler = async (data) => {
+
+    console.log('!appointmentData', data)
 
     const { patientId, doctorId, date, slot, time, role, serverId, note, type } = data
     let appointment = {}
@@ -30,7 +32,7 @@ const handler = async (data) => {
     try {
 
         const formatdata = { ...data.data, uid: Math.floor(Math.random() * (9999999999 - 1000000000 + 1) + 1000000000).toString() }
-        console.log('@new appointment server', formatdata)
+        // console.log('@new appointment server', formatdata)
 
         appointment = await db.appointment.create({
             data: formatdata

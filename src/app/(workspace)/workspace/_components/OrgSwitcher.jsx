@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage, } from "@/components/ui/avatar"
-import { CircleUserRound, EllipsisVertical, PlusCircle, ShieldUser } from 'lucide-react'
+import { CircleUserRound, CreditCard, EllipsisVertical, Layers, PlusCircle, ShieldUser } from 'lucide-react'
 import { useModal } from '@/hooks/useModal'
 import { useSession, signOut } from 'next-auth/react'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -90,10 +90,11 @@ export default function OrgSwitcher() {
 
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent className="dark:bg-darkSecondaryBackground w-64 ml-2 rounded-lg border p-2 mr-2" side='right' align='start' sideOffset={4}>
+                <DropdownMenuContent className="dark:bg-darkSecondaryBackground w-64 ml-2 rounded-md border p-2 mr-2" side='right' align='start' sideOffset={4}>
 
-                    <DropdownMenuLabel className="p-0 font-normal text-center">
-                        <span className='text-sm'>Organizations</span>
+                    <DropdownMenuLabel className="p-0 font-normal px-2 flex flex-row items-center gap-2 text-sky-500">
+                        <Layers size={15} />
+                        <span className='text-sm'>Departments</span>
                     </DropdownMenuLabel>
 
                     <DropdownMenuSeparator />
@@ -128,11 +129,11 @@ export default function OrgSwitcher() {
                         </div>
                     )}
 
-                    <DropdownMenuItem disabled={(hasPermission('create-org') || superAdmin()) ? false : true} className='flex flex-row gap-2 text-xs text-muted-foreground items-center' onSelect={() => {
+                    <DropdownMenuItem disabled={(hasPermission('create-org') || superAdmin()) ? false : true} className='flex flex-row gap-2 text-xs items-center' onSelect={() => {
                         onOpen('neworgmodal')
                     }}>
-                        <PlusCircle size={15} className='text-muted-foreground' />
-                        Add new Organization
+                        <PlusCircle size={15} className='' />
+                        Add new Department
                     </DropdownMenuItem>
                 </DropdownMenuContent>
 

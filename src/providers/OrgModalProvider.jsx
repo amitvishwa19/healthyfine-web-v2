@@ -4,8 +4,9 @@ import { NewOrgModal } from "@/app/(workspace)/workspace/[orgId]/(misc)/_compone
 import AddMemberModal from "@/app/(workspace)/workspace/[orgId]/(misc)/_components/settings/_components/AddMemberModal";
 import { DeleteOrdModal } from "@/app/(workspace)/workspace/[orgId]/(misc)/_components/settings/_components/DeleteOrdModal";
 import SettingsModal from "@/app/(workspace)/workspace/[orgId]/(misc)/_components/settings/SettingsModal";
-import AddAppointment from "@/app/(workspace)/workspace/[orgId]/appointment/_components/AddAppointment";
+import AddAppointmentModal from "@/app/(workspace)/workspace/[orgId]/appointment/_components/AddAppointmentModal";
 import AppointmentCrud from "@/app/(workspace)/workspace/[orgId]/appointment/_components/AppointmentCrud";
+import NewAppointmentModal from "@/app/(workspace)/workspace/[orgId]/appointment/_components/NewAppointmentModal";
 import { AIPostGenerator } from "@/app/(workspace)/workspace/[orgId]/content/_components/AIPostGenerator";
 import { DeletePost } from "@/app/(workspace)/workspace/[orgId]/content/_components/DeletePostModal";
 import NewPost from "@/app/(workspace)/workspace/[orgId]/content/_components/NewPost";
@@ -44,7 +45,7 @@ export const OrgModalProvider = () => {
 
             <LeaveServerModal />
             <DeleteServerModal />
-            <AddAppointment />
+            <AddAppointmentModal />
             <AppointmentCrud />
 
 
@@ -66,6 +67,8 @@ export const OrgModalProvider = () => {
 
             <AIPostGenerator />
             <PreviewDialouge />
+
+            <NewAppointmentModal />
 
             {/* <DeletePost /> */}
 

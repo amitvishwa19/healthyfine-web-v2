@@ -199,38 +199,20 @@ function DataTable({ columns, data, }) {
 
 
 
-            <div className="flex items-center py-4">
+            <div className="flex flex-row gap-4 items-center mb-4">
 
-                <div className='flex flex-row justify-evenly gap-4'>
+                <div className='flex flex-row w-full gap-4'>
                     <Input
-                        placeholder="Patient..."
-                        // value={(table.getColumn("patient")?.getFilterValue()) ?? ""}
-                        // onChange={(event) =>
-                        //     table.getColumn("patient")?.setFilterValue(event.target.value)
+                        placeholder="Search content by title..."
+                        value={(table.getColumn("title")?.getFilterValue()) ?? ""}
+                        onChange={(event) =>
+                            table.getColumn("title")?.setFilterValue(event.target.value)
 
-                        // }
-                        className="max-w-sm"
+                        }
+                        className="w-full"
                     />
 
-                    <Input
-                        placeholder="Doctor..."
-                        // value={(table.getColumn("doctor")?.getFilterValue()) ?? ""}
-                        // onChange={(event) =>
-                        //     table.getColumn("doctor")?.setFilterValue(event.target.value)
 
-                        // }
-                        className="max-w-sm"
-                    />
-
-                    <Input
-                        placeholder="Status..."
-                        // value={(table.getColumn("status")?.getFilterValue()) ?? ""}
-                        // onChange={(event) =>
-                        //     table.getColumn("status")?.setFilterValue(event.target.value)
-
-                        // }
-                        className="max-w-sm"
-                    />
 
                 </div>
 

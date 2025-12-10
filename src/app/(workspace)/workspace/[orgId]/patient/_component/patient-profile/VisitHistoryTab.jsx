@@ -1,7 +1,12 @@
 import PropTypes from 'prop-types';
 import Icon from '@/components/ui/AppIcon';
+import { mockPatientData } from './PatientProfilePage';
+import { Button } from '@/components/ui/button';
+import { CustomBadge } from '../../../(misc)/_components/CustomBadge';
 
-export default function VisitHistoryTab({ visits }) {
+export default function VisitHistoryTab() {
+    const visits = mockPatientData.visitHistory
+
     const getVisitTypeColor = (type) => {
         switch (type) {
             case 'Emergency':
@@ -18,7 +23,7 @@ export default function VisitHistoryTab({ visits }) {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 w-full">
             <div className="relative">
                 <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-border" />
 
@@ -39,9 +44,9 @@ export default function VisitHistoryTab({ visits }) {
                                     </div>
                                     <div className="text-sm text-text-secondary">{visit?.provider} • {visit?.department}</div>
                                 </div>
-                                <button className="self-start sm:self-auto px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 ease-out text-sm font-medium">
+                                <Button variant={'outline'} size={'sm'} className="">
                                     View Details
-                                </button>
+                                </Button>
                             </div>
 
                             <div className="space-y-3">
@@ -65,9 +70,9 @@ export default function VisitHistoryTab({ visits }) {
                                         <div className="text-xs text-text-secondary mb-2">Prescriptions</div>
                                         <div className="flex flex-wrap gap-2">
                                             {visit?.prescriptions?.map((prescription, idx) => (
-                                                <span key={idx} className="inline-flex items-center px-3 py-1 bg-muted rounded-full text-xs text-foreground">
+                                                <CustomBadge status='progress' key={idx} className="inline-flex items-center px-3 py-1 bg-muted rounded-full text-xs text-foreground">
                                                     {prescription}
-                                                </span>
+                                                </CustomBadge>
                                             ))}
                                         </div>
                                     </div>
@@ -78,9 +83,9 @@ export default function VisitHistoryTab({ visits }) {
                                         <div className="text-xs text-text-secondary mb-2">Lab Tests Ordered</div>
                                         <div className="flex flex-wrap gap-2">
                                             {visit?.labTests?.map((test, idx) => (
-                                                <span key={idx} className="inline-flex items-center px-3 py-1 bg-accent/10 text-accent rounded-full text-xs">
+                                                <CustomBadge status='info' key={idx} className="info inline-flex items-center px-3 py-1 bg-accent/10 text-accent rounded-full text-xs">
                                                     {test}
-                                                </span>
+                                                </CustomBadge>
                                             ))}
                                         </div>
                                     </div>

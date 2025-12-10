@@ -6,10 +6,12 @@ import { useOrg } from "@/providers/OrgProvider";
 
 export const DataContext = createContext(null);
 
-export default function DataProvider({ appointments, children }) {
+export default function DataProvider({ children }) {
     const { server } = useOrg()
     const dispatch = useDispatch()
     const appointment = { id: '12rerefe43ed', name: 'Devlomatix solutions' }
+
+    console.log('@DataProvider loaded')
 
     useEffect(() => {
         if (server) {
@@ -20,10 +22,10 @@ export default function DataProvider({ appointments, children }) {
 
 
     return (
-        <DataContext.Provider value={appointments}>
+        <DataContext.Provider value={appointment}>
             {children}
         </DataContext.Provider>
     );
 }
 
-export const useApp = () => useContext(DataContext)
+export const useData = () => useContext(DataContext)

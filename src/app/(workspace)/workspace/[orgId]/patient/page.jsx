@@ -33,7 +33,6 @@ export default function PatientPage() {
     const [active, setActive] = useState({ title: 'Patients', icon: 'accessibility', component: <PatientManagementPage /> })
     const nav = [
         { title: 'Patients', icon: 'accessibility', component: <PatientManagementPage /> },
-        { title: 'Patients-2', icon: 'accessibility', component: <PatientSearchPage /> },
         { title: 'Medical Records', icon: 'square-activity', component: <MedicalRecordsPage /> },
         { title: 'Billing', icon: 'square-activity', component: <BillingManagementPage /> }
     ]
@@ -274,6 +273,7 @@ export default function PatientPage() {
                     {nav.map((item) => (
                         <Button
                             key={item.title} variant='ghost'
+                            size={'sm'}
                             className={`border w-40 capitalize hover:bg-primary/20 dark:hover:bg-darkFocusColor ${active.title === item.title && 'bg-primary/20 dark:bg-darkFocusColor'}`}
                             onClick={() => { setActive(item) }}
                         >

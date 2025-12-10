@@ -17,6 +17,8 @@ import Profile from './_components/Profile';
 import Database from './_components/Database';
 import PrivacyPolicy from './_components/PrivacyPolicy';
 import Timings from './_components/Timings';
+import SetupWizard from './_components/SetupWizard';
+
 
 
 const settingItems = [
@@ -41,6 +43,13 @@ const settingItems = [
         icon: 'users',
         description: 'Add, remove, and manage team members.',
         component: <Members />
+    },
+    {
+        title: 'Setup Wizard',
+        value: 'setup',
+        icon: 'tool-case',
+        description: 'Application setup and configuration wizard.',
+        component: <SetupWizard />
     },
     {
         title: 'Appearance',

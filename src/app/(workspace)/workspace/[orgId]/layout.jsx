@@ -35,7 +35,7 @@ export default async function layout({ children }) {
     return (
         <QueryProvider>
             <OrgModalProvider />
-            <DataProvider appointments={appointments}>
+            <DataProvider >
                 <div className={`flex h-screen max-w-screen ${font.className} overflow-hidden `}>
                     <div className='h-screen flex-grow hidden xl:flex '>
                         {/* <OrgNavigation /> */}
